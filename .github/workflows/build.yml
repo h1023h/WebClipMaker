@@ -20,31 +20,13 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
 
-    - name: Cache Gradle packages
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-
-    - name: Make gradlew executable
+    - name: Install Gradle
       run: |
-        if [ -f "gradlew" ]; then
-          chmod +x gradlew
-        else
-          echo "gradlew not found, using system gradle"
-        fi
+        sudo apt-get update
+        sudo apt-get install -y gradle
 
     - name: Build with Gradle
-      run: |
-        if [ -f "gradlew" ]; then
-          ./gradlew assembleDebug
-        else
-          gradle assembleDebug
-        fi
+      run: gradle assembleDebug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
